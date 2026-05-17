@@ -71,7 +71,7 @@ def list_movies():
     print(f"\n{len(movies)} movies in total:")
     for movie, data in movies.items():
         print(f"- {movie} ({data['year']}) - Rating: {data['rating']}/10")
-        print(f"  Poster-URL: {data['poster']}")
+        #print(f"  Poster-URL: {data['poster']}")
 
 
 def add_movie():
@@ -110,11 +110,13 @@ def delete_movie():
 
 
 def update_movie():
-    name = input("Enter movie name to update: ").strip()
+    """Task 4: Aktualisiert die persönliche Notiz zu einem Film."""
+    name = input("Enter movie name: ").strip()
     movies = movie_db.list_movies()
+
     if name in movies:
-        new_rating = get_valid_number("Enter new movie rating (0-10): ", 0.0, 10.0, is_float=True)
-        movie_db.update_movie(name, new_rating)
+        movie_note = input("Enter movie note: ").strip()
+        movie_db.update_movie(name, movie_note)
     else:
         print("Movie not found.")
 
@@ -172,6 +174,7 @@ def sort_movies(by_key):
 
 
 def generate_website():
+    """Task 9: Generiert die Website und baut den Hover-Effekt (title-Attribut) ein."""
     movies = movie_db.list_movies()
 
     template_path = "_static/index_template.html"
@@ -181,15 +184,20 @@ def generate_website():
         with open(template_path, "r", encoding="utf-8") as file:
             template_content = file.read()
     except FileNotFoundError:
-        print(f"Error: Template file '{template_path}' not found. Please check your '_static' folder.")
+        print(f"Error: Template file '{template_path}' not found.")
         return
 
+    # Das HTML-Film-Raster dynamisch zusammenbauen
     movie_grid_html = ""
     for title, data in movies.items():
         poster_src = data['poster'] if data['poster'] != "N/A" else "https://placeholder.com"
 
+        # Holt die Notiz aus den Daten. Falls keine da ist, bleibt der Tooltip leer oder zeigt nichts an.
+        note_text = data.get('note', '')
+
         movie_grid_html += "<li>\n"
-        movie_grid_html += "    <div class=\"movie\">\n"
+        # KORREKTUR: title="{note_text}" sorgt für das kleine Hover-Fenster aus deinem Screenshot!
+        movie_grid_html += f"    <div class=\"movie\" title=\"{note_text}\">\n"
         movie_grid_html += f"        <img class=\"movie-poster\" src=\"{poster_src}\" alt=\"{title} Poster\">\n"
         movie_grid_html += f"        <div class=\"movie-title\">{title}</div>\n"
         movie_grid_html += f"        <div class=\"movie-year\">{data['year']}</div>\n"
@@ -199,11 +207,11 @@ def generate_website():
     app_title = "My Movie App"
     updated_content = template_content.replace("__TEMPLATE_TITLE__", app_title)
     updated_content = updated_content.replace("__TEMPLATE_MOVIE_GRID__", movie_grid_html)
-
     updated_content = updated_content.replace('href="style.css"', 'href="_static/style.css"')
 
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(updated_content)
+
     print("Website was generated successfully.")
 
 
