@@ -1,0 +1,16 @@
+# Geheimnisse und Keys (WICHTIG!)
+.env/
+
+# Lokale Datenbank (Inhalt ändert sich ständig)
+movies.db
+
+# Python-Systemdateien
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# IDE-spezifische Ordner (PyCharm / VS Code)
+.idea/
+.vscode/
